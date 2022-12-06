@@ -36,6 +36,11 @@ Fundera på vilka parameterar kan vara de samma (namn, författare/artist, utlå
 import Book from "./book.js";
 import Movie from "./movie.js";
  */
+
+const bookList = document.querySelector("#bookList");
+const movieList = document.querySelector('#movieList');
+let mediaId = 0;
+
 class Library {
     constructor (libraryName, address, phoneNum, eMail) {
         this._libraryName = libraryName;
@@ -45,13 +50,78 @@ class Library {
         this._books = [];
         this._movies = [];
     }
+    print_books () {
+        this._books.forEach(addToBookList)
+    }
+    print_movies () {
+        this._movies.forEach(addToMoviesList)
+    }
 }
+
 let muiNeLib = new Library ("Mui Ne Library", "69 Nguyen Dinh Chieu", "+8488888888", "kim.Laundry@myspace.com");
 //console.log(muiNeLib);
+
+
+
+function addToBookList (book) {
+    if (book._borrowed === false) {
+        bookList.insertAdjacentHTML("afterbegin", "<li>" + `Title: ${book._title} | Author: ${book._author} | Pages: ${book._pages} | Available : Yes` + "</li>" + `<button id="${book._id}">` + "borrow" + "</button>");
+        const borrowBtn = document.getElementById(book._id);
+        borrowBtn.addEventListener('click', () => {
+            book.borrow_media();
+/*             location.reload();  add after adding JSON*/
+            console.log(muiNeLib._books);
+            bookList.innerHTML="";
+            muiNeLib.print_books();
+        });
+
+    } else {
+        bookList.insertAdjacentHTML("afterbegin", "<li>" + `Title: ${book._title} | Author: ${book._author} | Pages: ${book._pages} | Available : No` + "</li>" + `<button id="${book._id}">` + "return" + "</button>");
+        const borrowBtn = document.getElementById(book._id);
+        borrowBtn.addEventListener('click', () => {
+            book.return_media();
+/*             location.reload(); add after adding JSON  */
+            console.log(muiNeLib._books);
+            bookList.innerHTML="";
+            muiNeLib.print_books();
+        });
+    }
+}
+
+
+
+function addToMoviesList (movie) {
+    if (movie._borrowed === false) {
+        movieList.insertAdjacentHTML("afterbegin", "<li>" + `Title: ${movie._title} | Director: ${movie._director} | Minutes: ${movie._minutes} | Available : Yes` + "</li>" + `<button id="${movie._id}">` + "borrow" + "</button>");
+        const borrowBtn = document.getElementById(movie._id);
+        borrowBtn.addEventListener('click', () => {
+            movie.borrow_media();
+/*             location.reload();  add after adding JSON*/
+            console.log(muiNeLib._movies);
+            movieList.innerHTML="";
+            muiNeLib.print_movies();
+        });
+
+    } else {
+        movieList.insertAdjacentHTML("afterbegin", "<li>" + `Title: ${movie._title} | Director: ${movie._director} | Minutes: ${movie._minutes} | Available : No` + "</li>" + `<button id="${movie._id}">` + "return" + "</button>");
+        const borrowBtn = document.getElementById(movie._id);
+        borrowBtn.addEventListener('click', () => {
+            movie.return_media();
+/*             location.reload(); add after adding JSON  */
+            console.log(muiNeLib._movies);
+            movieList.innerHTML="";
+            muiNeLib.print_movies();
+        });
+    }
+}
+
+
 
 class Media {
     constructor(title, creator) {
         this._title = title;
+        this._id = mediaId;
+        mediaId++;
     }
     borrow_media () {
         this._borrowed = true;
@@ -60,6 +130,8 @@ class Media {
         this._borrowed = false;
     }
 }
+
+
 
 
 class Book extends Media {
@@ -73,6 +145,9 @@ class Book extends Media {
         muiNeLib._books.push(this);
     }
 }
+
+
+
 
 const catcherInTheRye = new Book ("Catcher In The Rye","J.D Salinger", 124);
 catcherInTheRye.addToLibrary();
@@ -94,5 +169,7 @@ class Movie extends Media {
 
 const lordOfTheRings = new Movie ("Lord Of The Rings, The Fellowship Of The Ring","Peter Jackson", 180); 
 lordOfTheRings.addToLibrary();
-lordOfTheRings.borrow_media();
 console.log(muiNeLib);
+
+muiNeLib.print_books();
+muiNeLib.print_movies();
