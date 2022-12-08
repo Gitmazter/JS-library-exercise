@@ -36,6 +36,8 @@ import Book from "./book.js";
 import Movie from "./movie.js";
 import {books} from "./books.js";
 import {movies} from "./movies.js";
+import borrow_media from "./borrow_media.js";
+import return_media from "./return_media.js";
 
 
 const bookList = document.querySelector("#bookList");
@@ -50,8 +52,8 @@ class Library {
         this._address = address;
         this._phoneNum = phoneNum;
         this._eMail = eMail;
-        this._books = [];
-        this._movies = [];
+        this._books = JSON.parse(localStorage.getItem('books'));
+        this._movies = JSON.parse(localStorage.getItem('movies'));
     }
     print_books () {
         this._books.forEach(addToBookList)
@@ -88,9 +90,16 @@ function addToBookList (book) {
         bookList.insertAdjacentHTML("afterbegin",'<div class="media_div">' + "<li>" + `Title: ${book._title} | Author: ${book._author} | Pages: ${book._pages} | Available : Yes` + "</li>" + `<button id="${book._id}">` + "borrow" + "</button>" + '</div>');
         const borrowBtn = document.getElementById(book._id);
         borrowBtn.addEventListener('click', () => {
-            book.borrow_media();
-/*             location.reload();  add after adding JSON*/
-            //console.log(muiNeLib._books);
+
+            borrow_media(book);
+            let allBooks = JSON.parse(localStorage.getItem('books'));
+            const index = allBooks.findIndex(name => name._title === book._title);
+            //console.log(index);
+            allBooks[index] = book;
+            //console.log(allBooks);
+            localStorage.setItem("books", JSON.stringify(allBooks));
+            //console.log(JSON.parse(localStorage.getItem('books')));
+            
             bookList.innerHTML="";
             muiNeLib.print_books();
             greeting.innerHTML = "";
@@ -101,9 +110,13 @@ function addToBookList (book) {
         bookList.insertAdjacentHTML("afterbegin", '<div class="media_div">' + "<li>" + `Title: ${book._title} | Author: ${book._author} | Pages: ${book._pages} | Available : No` + "</li>" + `<button id="${book._id}">` + "return" + "</button>" + '</div>' );
         const borrowBtn = document.getElementById(book._id);
         borrowBtn.addEventListener('click', () => {
-            book.return_media();
-/*             location.reload(); add after adding JSON  */
-            //console.log(muiNeLib._books);
+            return_media(book);
+
+            let allBooks = JSON.parse(localStorage.getItem('books'));
+            const index = allBooks.findIndex(name => name._title === book._title);
+            allBooks[index] = book;
+            localStorage.setItem("books", JSON.stringify(allBooks));
+
             bookList.innerHTML="";
             muiNeLib.print_books();
             greeting.innerHTML = "";
@@ -117,9 +130,13 @@ function addToMoviesList (movie) {
         movieList.insertAdjacentHTML("afterbegin", '<div class="media_div">' + "<li>" + `Title: ${movie._title} | Director: ${movie._director} | Minutes: ${movie._minutes} | Available : Yes` + "</li>" + `<button id="${movie._id}">` + "borrow" + "</button>" + '</div>');
         const borrowBtn = document.getElementById(movie._id);
         borrowBtn.addEventListener('click', () => {
-            movie.borrow_media();
-/*             location.reload();  add after adding JSON*/
-            //console.log(muiNeLib._movies);
+            borrow_media(movie);
+
+            let allMovies = JSON.parse(localStorage.getItem('movies'));
+            const index = allMovies.findIndex(name => name._title === movie._title);
+            allMovies[index] = movie;
+            localStorage.setItem("movies", JSON.stringify(allMovies));
+
             movieList.innerHTML="";
             muiNeLib.print_movies();
             greeting.innerHTML = "";
@@ -130,9 +147,13 @@ function addToMoviesList (movie) {
         movieList.insertAdjacentHTML("afterbegin", '<div class="media_div">' +"<li>" + `Title: ${movie._title} | Director: ${movie._director} | Minutes: ${movie._minutes} | Available : No` + "</li>" + `<button id="${movie._id}">` + "return" + "</button>" + '</div>');
         const borrowBtn = document.getElementById(movie._id);
         borrowBtn.addEventListener('click', () => {
-            movie.return_media();
-/*             location.reload(); add after adding JSON  */
-            //console.log(muiNeLib._movies);
+            return_media(movie);
+
+            let allMovies = JSON.parse(localStorage.getItem('movies'));
+            const index = allMovies.findIndex(name => name._title === movie._title);
+            allMovies[index] = movie;
+            localStorage.setItem("movies", JSON.stringify(allMovies)); 
+
             movieList.innerHTML="";
             muiNeLib.print_movies();
             greeting.innerHTML = "";
@@ -141,7 +162,7 @@ function addToMoviesList (movie) {
     }
 }
 
-/// Create book object
+/* /// Create book object
  for (let i = 0; i < books.length; i++) {
     const book = new Book (books[i], books[i+1], books[i+2]);
     muiNeLib._books.push(book);
@@ -155,6 +176,33 @@ for (let i = 0; i < movies.length; i++) {
     muiNeLib._movies.push(movie);
     i+=2;
 }
+ */
+if (localStorage.getItem("books"))  {
+    console.log("books exists");
+} else {
+    const lsbooks = [];
+    for (let i = 0; i < books.length; i++) {
+        const book = new Book (books[i], books[i+1], books[i+2]);
+        lsbooks.push(book);
+        i += 2;
+    }
+    localStorage.setItem("books",JSON.stringify(lsbooks))
+}
+console.log(localStorage.getItem("books"));
+
+
+if (localStorage.getItem("movies")) {
+    console.log("movies exists");
+} else {
+    const lsmovies = [];
+    for (let i = 0; i < movies.length; i++) {
+        const movie = new Movie(movies[i], movies[i+1], movies[i+2]);
+        lsmovies.push(movie);
+        i += 2;
+    }
+    localStorage.setItem("movies",JSON.stringify(lsmovies))
+}
+console.log(localStorage.getItem("movies"));
 
 muiNeLib.print_books();
 muiNeLib.print_movies();
