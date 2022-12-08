@@ -1,12 +1,15 @@
+
+let mediaId = 0;
 export default class Media {
-    constructor(name) {
-        this._name = name;
-        this._borrowed = false;
+    constructor(title) {
+        this._title = title;
+        this._id = mediaId;
+        mediaId++;
     }
-    rent_book () {
+    borrow_media () {
         this._borrowed = true;
     }
-    return_book () {
+    return_media () {
         this._borrowed = false;
     }
 }

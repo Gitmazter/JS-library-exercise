@@ -25,20 +25,23 @@ Och en som skriver ut hur många böcker som finns på biblioteket, och hur mån
 
  
 
-Bonus nivå!
+Bonus nivå! 
 
 Öva på att skapa arv genom att skapa en superklass som heter “media” där bok är en underklass och film är en annan. 
 
 Fundera på vilka parameterar kan vara de samma (namn, författare/artist, utlånad osv).
 
  */
-/* import Media from "./media.js";
 import Book from "./book.js";
 import Movie from "./movie.js";
- */
+import {books} from "./books.js";
+import {movies} from "./movies.js";
+
 
 const bookList = document.querySelector("#bookList");
 const movieList = document.querySelector('#movieList');
+const greeting = document.querySelector('#greeting');
+const contact = document.querySelector('#contact');
 let mediaId = 0;
 
 class Library {
@@ -56,120 +59,105 @@ class Library {
     print_movies () {
         this._movies.forEach(addToMoviesList)
     }
+    print_greeting () {
+        let numBooksBorrowed = checkBorrowed(this._books);
+        let numMoviesBorrowed = checkBorrowed(this._movies);
+        //console.log(numBooksBorrowed);
+        greeting.innerHTML= `This library has ${muiNeLib._books.length} books and ${numBooksBorrowed} are currently out on loan. </br>
+        This library also has ${this._movies.length} movies and ${numMoviesBorrowed} are currently out on loan.`
+    }
+    print_contact () {
+        contact.insertAdjacentHTML("afterbegin", '<ul>' +'<li>' + `DCSVN representative contact information` + '</li>' +  '<li>' + `Address: ${this._address}` + '</li>' + '<li>' + `Phone: ${this._phoneNum}` + '</li>' + '<li>' + `E-Mail: ${this._eMail}` + '</li>'  + '</ul>')
+    }
+}
+function checkBorrowed (media) {
+    let num = 0;
+    media.forEach(media => {
+        if (media._borrowed === true) {
+            num++;
+        }
+    });
+    return num;
 }
 
-let muiNeLib = new Library ("Mui Ne Library", "69 Nguyen Dinh Chieu", "+8488888888", "kim.Laundry@myspace.com");
-//console.log(muiNeLib);
 
-
+let muiNeLib = new Library ("Mui Ne Library", "69 Nguyen Dinh Chieu", "+8488888888", "kim.ngan34@dcs.vn");
 
 function addToBookList (book) {
     if (book._borrowed === false) {
-        bookList.insertAdjacentHTML("afterbegin", "<li>" + `Title: ${book._title} | Author: ${book._author} | Pages: ${book._pages} | Available : Yes` + "</li>" + `<button id="${book._id}">` + "borrow" + "</button>");
+        bookList.insertAdjacentHTML("afterbegin",'<div class="media_div">' + "<li>" + `Title: ${book._title} | Author: ${book._author} | Pages: ${book._pages} | Available : Yes` + "</li>" + `<button id="${book._id}">` + "borrow" + "</button>" + '</div>');
         const borrowBtn = document.getElementById(book._id);
         borrowBtn.addEventListener('click', () => {
             book.borrow_media();
 /*             location.reload();  add after adding JSON*/
-            console.log(muiNeLib._books);
+            //console.log(muiNeLib._books);
             bookList.innerHTML="";
             muiNeLib.print_books();
+            greeting.innerHTML = "";
+            muiNeLib.print_greeting();
         });
 
     } else {
-        bookList.insertAdjacentHTML("afterbegin", "<li>" + `Title: ${book._title} | Author: ${book._author} | Pages: ${book._pages} | Available : No` + "</li>" + `<button id="${book._id}">` + "return" + "</button>");
+        bookList.insertAdjacentHTML("afterbegin", '<div class="media_div">' + "<li>" + `Title: ${book._title} | Author: ${book._author} | Pages: ${book._pages} | Available : No` + "</li>" + `<button id="${book._id}">` + "return" + "</button>" + '</div>' );
         const borrowBtn = document.getElementById(book._id);
         borrowBtn.addEventListener('click', () => {
             book.return_media();
 /*             location.reload(); add after adding JSON  */
-            console.log(muiNeLib._books);
+            //console.log(muiNeLib._books);
             bookList.innerHTML="";
             muiNeLib.print_books();
+            greeting.innerHTML = "";
+            muiNeLib.print_greeting();
         });
     }
 }
 
-
-
 function addToMoviesList (movie) {
     if (movie._borrowed === false) {
-        movieList.insertAdjacentHTML("afterbegin", "<li>" + `Title: ${movie._title} | Director: ${movie._director} | Minutes: ${movie._minutes} | Available : Yes` + "</li>" + `<button id="${movie._id}">` + "borrow" + "</button>");
+        movieList.insertAdjacentHTML("afterbegin", '<div class="media_div">' + "<li>" + `Title: ${movie._title} | Director: ${movie._director} | Minutes: ${movie._minutes} | Available : Yes` + "</li>" + `<button id="${movie._id}">` + "borrow" + "</button>" + '</div>');
         const borrowBtn = document.getElementById(movie._id);
         borrowBtn.addEventListener('click', () => {
             movie.borrow_media();
 /*             location.reload();  add after adding JSON*/
-            console.log(muiNeLib._movies);
+            //console.log(muiNeLib._movies);
             movieList.innerHTML="";
             muiNeLib.print_movies();
+            greeting.innerHTML = "";
+            muiNeLib.print_greeting();
         });
 
     } else {
-        movieList.insertAdjacentHTML("afterbegin", "<li>" + `Title: ${movie._title} | Director: ${movie._director} | Minutes: ${movie._minutes} | Available : No` + "</li>" + `<button id="${movie._id}">` + "return" + "</button>");
+        movieList.insertAdjacentHTML("afterbegin", '<div class="media_div">' +"<li>" + `Title: ${movie._title} | Director: ${movie._director} | Minutes: ${movie._minutes} | Available : No` + "</li>" + `<button id="${movie._id}">` + "return" + "</button>" + '</div>');
         const borrowBtn = document.getElementById(movie._id);
         borrowBtn.addEventListener('click', () => {
             movie.return_media();
 /*             location.reload(); add after adding JSON  */
-            console.log(muiNeLib._movies);
+            //console.log(muiNeLib._movies);
             movieList.innerHTML="";
             muiNeLib.print_movies();
+            greeting.innerHTML = "";
+            muiNeLib.print_greeting();
         });
     }
 }
 
+/// Create book object
+ for (let i = 0; i < books.length; i++) {
+    const book = new Book (books[i], books[i+1], books[i+2]);
+    muiNeLib._books.push(book);
+    i += 2;
+} 
+console.log(books.length)
 
-
-class Media {
-    constructor(title, creator) {
-        this._title = title;
-        this._id = mediaId;
-        mediaId++;
-    }
-    borrow_media () {
-        this._borrowed = true;
-    }
-    return_media () {
-        this._borrowed = false;
-    }
+/// Create Movie Objects
+for (let i = 0; i < movies.length; i++) {
+    const movie = new Movie (movies[i], movies[i+1], movies[i+2]);
+    muiNeLib._movies.push(movie);
+    i+=2;
 }
-
-
-
-
-class Book extends Media {
-    constructor (title, creator, numOfPages) {
-        super(title);
-        this._author = creator;
-        this._pages = numOfPages;
-        this._borrowed = false;
-    }
-    addToLibrary () {
-        muiNeLib._books.push(this);
-    }
-}
-
-
-
-
-const catcherInTheRye = new Book ("Catcher In The Rye","J.D Salinger", 124);
-catcherInTheRye.addToLibrary();
-
-console.log(muiNeLib);
-//console.log(catcherInTheRye);
-
-class Movie extends Media {
-    constructor (title, creator, numOfMinutes) {
-        super(title);
-        this._director = creator;
-        this._minutes = numOfMinutes;
-        this._borrowed = false;
-    }
-    addToLibrary () {
-        muiNeLib._movies.push(this);
-    }
-}
-
-const lordOfTheRings = new Movie ("Lord Of The Rings, The Fellowship Of The Ring","Peter Jackson", 180); 
-lordOfTheRings.addToLibrary();
-console.log(muiNeLib);
 
 muiNeLib.print_books();
 muiNeLib.print_movies();
+muiNeLib.print_greeting();
+muiNeLib.print_contact();
+

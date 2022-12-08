@@ -68,3 +68,52 @@ header {
         border-right: 4px black solid;
     }
 }
+
+
+main {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    background-color: yellow;
+    color: red;
+    display: flex;
+    flex-direction: column;
+    border-left: 100px solid red;
+    border-right: 100px solid red;
+    border-top: 100px solid red;
+    padding-left: 50px;
+
+    
+    .media_div {
+        display: flex;
+        flex-direction: row;
+        padding: 5px;
+        button {
+            margin-left: 10px;
+        }
+    }
+    ul {
+        list-style: none;
+    }
+}
+
+footer {
+    display: flex;
+    flex-direction: row;
+    background-color: red;
+    color: yellow;
+    font-size: large;
+    padding: 20px;
+    font-family:fantasy;
+    #contact {
+        ul {
+            list-style:none ;
+        }
+    }
+    #party_logo {
+        background-image:url(./images/Emblem_of_Vietnam_Communist_Party.png);
+        background-size: cover;
+        height: 100px;
+        width: 100px;
+        align-self: center;
+    }
+}
